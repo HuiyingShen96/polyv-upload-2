@@ -1,6 +1,97 @@
 const XDomainRequest = window.XDomainRequest;
 
 class Ajax {
+  static post({
+    url,
+    data,
+    done,
+    fail
+  }) {
+    let xhr = new XMLHttpRequest();
+    let fd = new FormData();
+    for (let key in data) {
+      if (data.hasOwnProperty(key)) {
+        fd.append(key, data[key]);
+      }
+    }
+    xhr.open('POST', url);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        switch (xhr.status) {
+          case 200:
+            done(JSON.parse(xhr.responseText));
+            break;
+          case 201:
+            done(xhr.status, xhr);
+            break;
+          default:
+            fail(xhr.status, xhr);
+            break;
+        }
+      }
+    };
+    xhr.send(fd);
+    return xhr;
+  }
+
+  static getJSON({
+    url,
+    data,
+    done,
+    fail
+  }) {
+    if (data) {
+      let queryStr = Ajax.param(data);
+      url += `?${queryStr}`;
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          done(JSON.parse(xhr.responseText));
+        } else {
+          fail(xhr.status);
+        }
+      }
+    };
+    xhr.send();
+    return xhr;
+  }
+
+  static uploadFile({
+    url,
+    data,
+    done,
+    fail
+  }) {
+    
+    let xhr = new XMLHttpRequest();
+    let fd = new FormData();
+    for (let key in data) {
+      if (data.hasOwnProperty(key)) {
+        fd.append(key, data[key]);
+      }
+    }
+    xhr.open('POST', url);
+    xhr.send(fd);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        switch (xhr.status) {
+          case 200:
+            done(JSON.parse(xhr.responseText));
+            break;
+          case 201:
+            done(xhr.status, xhr);
+            break;
+          default:
+            fail(xhr.status, xhr);
+            break;
+        }
+      }
+    };
+  }
+
   static param(a, traditional) {
     let rbracket = /\[\]$/;
 
@@ -69,16 +160,13 @@ class Ajax {
     // return encodedString.slice(1);
   }
 
-  static fetchIe9(url, options = {}) {
-    if (window.XDomainRequest) {
-      // https://developer.mozilla.org/en-US/docs/Web/API/XDomainRequest
-      // only support GET and POST method
-      // request and response content type should be JSON
-      // without response status code
-      return new Promise((resolve, reject) => {
-        const method = options.method || 'GET';
-        const timeout = options.timeout || 30000;
-        let data = options.body || options.params || {};
+  static ajax(url, options = {}) {
+    const method = options.method || 'GET';
+    const timeout = options.timeout || 30000;
+    let data = options.data || null;
+
+    return new Promise((resolve, reject) => {
+      if (window.XDomainRequest) {
         if (data instanceof Object) {
           data = JSON.stringify(data);
         }
@@ -95,265 +183,42 @@ class Ajax {
           }
           return reject({});
         };
+        // fix random aborting: https://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
+        XDR.onprogress = () => {};
         XDR.ontimeout = () => reject('XDomainRequest timeout');
         XDR.onerror = () => reject('XDomainRequest error');
-        XDR.send(data);
-      });
-    } else {
-      // native fetch or polyfill fetch(XMLHttpRequest)
-      // fetch...
-    }
-  }
-
-  static ajax(url, options = {}) {
-    const method = options.method || 'GET';
-    const timeout = options.timeout || 30000;
-    const done = options.done || (() => {});
-    const fail = options.fail || (() => {});
-    
-
-    if (window.XDomainRequest) {
-      let data = options.body || options.params || {};
-      if (data instanceof Object) {
-        data = JSON.stringify(data);
-      }
-
-      const XDR = new XDomainRequest();
-      XDR.open(method, url);
-      XDR.timeout = timeout;
-      XDR.onload = () => {
-        try {
-          const json = JSON.parse(XDR.responseText);
-          done(json.data);
-        } catch (e) {
-          fail(e);
-        }
-      };
-      XDR.ontimeout = () => fail('XDomainRequest timeout');
-      XDR.onerror = () => fail('XDomainRequest error');
-      XDR.send(data);
-    } else {
-      if (queryParams) {
-        let queryStr = Ajax.param(queryParams);
-        url += `?${queryStr}`;
-      }
-
-      let xhr = new XMLHttpRequest();
-      xhr.open('GET', url);
-      if (headers) {
-        for (let key in headers) {
-          if (headers.hasOwnProperty(key)) {
-            xhr.setRequestHeader(key, headers[key]);
+        setTimeout(() => {
+          XDR.send(data);
+        }, 0);
+      } else {
+        let fd = null;
+        if (data instanceof Object) {
+          if (method === 'GET') {
+            let queryStr = Ajax.param(data);
+            url += `?${queryStr}`;
+          } else if (method === 'POST') {
+            fd = new FormData();
+            for (let key in data) {
+              if (data.hasOwnProperty(key)) {
+                fd.append(key, data[key]);
+              }
+            }
           }
         }
-      }
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          done(xhr.responseText);
-        } else {
-          fail(xhr.status);
-        }
-      };
-      return xhr;
-    }
-  }
 
-  // 暂时没用上
-  static get({
-    url,
-    queryParams,
-    headers,
-    done,
-    fail
-  }) {
-    if (queryParams) {
-      let queryStr = Ajax.param(queryParams);
-      url += `?${queryStr}`;
-    }
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    if (headers) {
-      for (let key in headers) {
-        if (headers.hasOwnProperty(key)) {
-          xhr.setRequestHeader(key, headers[key]);
-        }
+        let xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && xhr.status < 400) {
+              return resolve(JSON.parse(xhr.responseText));
+            }
+            return reject(xhr.status);
+          }
+        };
+        xhr.send(fd);
       }
-    }
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        done(xhr.responseText);
-      } else {
-        fail(xhr.status);
-      }
-    };
-    return xhr;
-  }
-
-  static post({
-    url,
-    data,
-    queryParams,
-    headers,
-    done,
-    fail
-  }) {
-    if (queryParams) {
-      let queryStr = Ajax.param(queryParams);
-      url += `?${queryStr}`;
-    }
-    let xhr = new XMLHttpRequest();
-    let fd = new FormData();
-    for (let key in data) {
-      if (data.hasOwnProperty(key)) {
-        fd.append(key, data[key]);
-      }
-    }
-    xhr.open('POST', url);
-    if (headers) {
-      for (let key in headers) {
-        if (headers.hasOwnProperty(key)) {
-          xhr.setRequestHeader(key, headers[key]);
-        }
-      }
-    }
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        switch (xhr.status) {
-          case 200:
-            done(JSON.parse(xhr.responseText));
-            break;
-          case 201:
-            done(xhr.status, xhr);
-            break;
-          default:
-            fail(xhr.status, xhr);
-            break;
-        }
-      }
-    };
-    xhr.send(fd);
-    return xhr;
-  }
-
-  static getJSON({
-    url,
-    data,
-    done,
-    fail
-  }) {
-    if (data) {
-      let queryStr = Ajax.param(data);
-      url += `?${queryStr}`;
-    }
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          done(JSON.parse(xhr.responseText));
-        } else {
-          fail(xhr.status);
-        }
-      }
-    };
-    xhr.send();
-    return xhr;
-  }
-
-  // 暂时没用上
-  static jsonp({
-    url,
-    data,
-    done
-  }) {
-    if (data) {
-      let queryStr = Ajax.param(data);
-      url += `?${queryStr}`;
-    }
-
-    let callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-    window[callbackName] = function(data) {
-      delete window[callbackName];
-      document.body.removeChild(script);
-      done(data);
-    };
-
-    let script = document.createElement('script');
-    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-    document.body.appendChild(script);
-  }
-
-  static uploadFile({
-    url,
-    data,
-    queryParams,
-    headers,
-    done,
-    fail
-  }) {
-    if (queryParams) {
-      let queryStr = Ajax.param(queryParams);
-      url += `?${queryStr}`;
-    }
-    let xhr = new XMLHttpRequest();
-    let fd = new FormData();
-    for (let key in data) {
-      if (data.hasOwnProperty(key)) {
-        fd.append(key, data[key]);
-      }
-    }
-    xhr.open('POST', url);
-    if (headers) {
-      for (let key in headers) {
-        if (headers.hasOwnProperty(key)) {
-          xhr.setRequestHeader(key, headers[key]);
-        }
-      }
-    }
-    xhr.send(fd);
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        switch (xhr.status) {
-          case 200:
-            done(JSON.parse(xhr.responseText));
-            break;
-          case 201:
-            done(xhr.status, xhr);
-            break;
-          default:
-            fail(xhr.status, xhr);
-            break;
-        }
-      }
-    };
-  }
-
-  // 暂时没用上
-  static head({
-    url,
-    cache,
-    done,
-    fail
-  }) {
-    // console.log('head!!!');
-
-    let xhr = new XMLHttpRequest();
-
-    xhr.open('HEAD', url);
-    // if (!cache) {
-    //     xhr.setRequestHeader('Cache-Control', 'no-cache');
-    // }
-    xhr.send();
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          done(null, xhr.status, xhr);
-        } else {
-          fail(xhr.status);
-        }
-      }
-    };
+    });
   }
 }
 
