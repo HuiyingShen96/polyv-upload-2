@@ -1,0 +1,117 @@
+$btnColor: #4f94fa;
+$btnFontSize: 14px;
+$btnHeight: 30px;
+$borderRadius: 3px;
+$minWidth: 84px;
+$maxWidth: 100px;
+.btn-select {
+  display: inline-block;
+
+  position: relative;
+
+  border: none;
+  border-radius: $borderRadius;
+  padding: 0 16px 0 8px;
+  min-width: $minWidth;
+  max-width: $maxWidth;
+  height: $btnHeight;
+
+  font-size: $btnFontSize;
+  line-height: $btnHeight;
+  text-align: center;
+  vertical-align: top;
+
+  color: #fff;
+  background: none;
+  background-color: $btnColor;
+
+  outline: none;
+
+  cursor: pointer;
+  .title {
+    height: 100%;
+  }
+  .titleContent {
+    display: block;
+    overflow: hidden;
+
+    min-width: 60px;
+    max-width: 76px;
+    height: 100%;
+
+    text-align: center;
+    text-overflow: ellipsis;
+  }
+  .fa-caret-down {
+    position: absolute;
+    top: 0;
+    right: 7px;
+
+    width: 8px;
+
+    line-height: $btnHeight;
+  }
+  &.hide {
+    display: none;
+  }
+  .content {
+    display: none;
+    overflow-y: auto;
+
+    position: absolute;
+    top: $btnHeight;
+    left: 0;
+
+    margin: 5px 0 0;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: $borderRadius;
+    padding: 5px 0;
+    min-width: 100%;
+    max-height: 400px;
+
+    color: gray;
+    background-color: #fff;
+
+    box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+  }
+  li {
+    display: block;
+    overflow-x: hidden;
+
+    list-style: none;
+
+    padding: 5px 10px;
+    max-width: 600px;
+
+    line-height: 2ex;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+  &.focus {
+    border-color: transparentize($btnColor, 0.15);
+
+    background-color: transparentize($btnColor, 0.15);
+    .content {
+      display: block;
+    }
+  }
+  &:hover {
+    border-color: transparentize($btnColor, 0.15);
+
+    color: #fff;
+    background-color: transparentize($btnColor, 0.15);
+  }
+  &.disabled {
+    border-color: transparentize($btnColor, 0.5);
+
+    background-color: transparentize($btnColor, 0.5);
+
+    cursor: default;
+  }
+}

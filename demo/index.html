@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>upload demo</title>
+	<style>
+		#videoInfo{
+			padding: 10px;
+			border: solid 1px #eee;
+			height: 300px;
+			overflow: auto;
+		}
+	</style>
+</head>
+<body>
+	<div style="width: 550px; margin: 0 auto;">
+		<h1>视频上传Demo</h1>
+		<input type="button" id="upload" value="上传" />
+		<p style="color: red">上传插件demo仅供演示，所上传的视频将在隔天凌晨02：00清除。</p>
+
+		<div>
+			<h2>视频信息如下：</h2>
+			<p id="videoInfo"></p>
+		</div>
+	</div>
+
+	<!--引入POLYV web上传插件的js文件-->
+	<script src="//playertest.polyv.net/player2/huiying/upload-demo-2/polyv-upload.min.js"></script>
+	<!-- <script src="//playertest.polyv.net/player2/huiying/plug-in2/js/polyv-upload.js"></script> -->
+	<!-- <script src="http://beta.polyv.net/file/plug-in2/js/polyv-upload.js"></script> -->
+	<!-- <script src="http://beta.polyv.net/file/plug-in-v2/polyv-upload.js"></script> -->
+	<!-- <script src="//v.polyv.net/file/plug-in-v2/polyv-upload.min.js"></script> -->
+	<!-- <script src="//v.polyv.net/file/plug-in2/js/polyv-upload.js"></script> -->
+	<!-- <script src="//localhost:8088/polyv-file/plug-in-v2/polyv-upload.js"></script> -->
+	<!-- <script src="//localhost:8088/polyv-file/plug-in2/js/polyv-upload.js"></script> -->
+
+	<script src="index.js"></script>
+</body>
+
+</html>
