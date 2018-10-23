@@ -168,7 +168,13 @@ class Ajax {
     return new Promise((resolve, reject) => {
       if (window.XDomainRequest) {
         if (data instanceof Object) {
-          data = JSON.stringify(data);
+          if (method === 'GET') {
+            let queryStr = Ajax.param(data);
+            url += `?${queryStr}`;
+            data = null;
+          } else if (method === 'POST') {
+            data = JSON.stringify(data);
+          }
         }
 
         const XDR = new XDomainRequest();
@@ -176,8 +182,7 @@ class Ajax {
         XDR.timeout = timeout;
         XDR.onload = () => {
           try {
-            const json = JSON.parse(XDR.responseText);
-            return resolve(json.data);
+            return resolve(JSON.parse(XDR.responseText));
           } catch (e) {
             reject(e);
           }
@@ -226,4 +231,5 @@ export default {
   getJSON: Ajax.getJSON,
   uploadFile: Ajax.uploadFile,
   post: Ajax.post,
+  ajax: Ajax.ajax
 };

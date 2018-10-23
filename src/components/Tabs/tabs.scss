@@ -18,7 +18,9 @@ $class-prefix: "tabs";
 	&-nav > &-tab {
 		float: left;
 		list-style: none;
-		padding: 8px 20px;
+		padding: 0 20px;
+		line-height: 38px;
+		height: 38px;
 		text-decoration: none;
 		color: #666;
 		cursor: pointer;
@@ -34,4 +36,33 @@ $class-prefix: "tabs";
 	&-content &-active {
 		display: block;
 	}
+}
+
+.ui-tabs {
+	height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+
+  &.show-nav {
+  	.tabs-bar {
+  		position: absolute;
+  		top: 0;
+  		left: 0;
+  		width: 100%;
+  	}
+
+  	.tabs-content {
+  		padding-top: 50px;
+  		height: 100%;
+  		box-sizing: border-box;
+  	}
+  }
+}
+
+.tabs-panel {
+	height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
 }

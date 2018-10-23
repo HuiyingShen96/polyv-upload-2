@@ -11,7 +11,8 @@ export class PolyvUpload {
     if (((!options.userid || !options.ts || !options.hash || !options.sign) && !options.requestUrl) || !options.uploadButtton) {
       throw new TypeError('缺少必选参数！');
     }
-    var urlPrefix = PROTOCOL + '//v.polyv.net/file/plug-in-v2';
+    var urlPrefix = PROTOCOL + '//playertest.polyv.net/player2/huiying/plug-in-v2';
+    // var urlPrefix = PROTOCOL + '//v.polyv.net/file/plug-in-v2';
 
     this.options = {
       userid: options.userid,
@@ -45,8 +46,7 @@ export class PolyvUpload {
 
     // 默认使用HTML5方式上传
     // this.url = urlPrefix + '/upload-html5/build/index.html';
-    this.url = PROTOCOL + '//playertest.polyv.net/player2/huiying/build/index.html';
-    // this.url = PROTOCOL + '//localhost:3000';
+    this.url = urlPrefix + '/build/index.html';
 
     // 测试flash版
     // this.url = urlPrefix + '/upload-flash/index.html';
@@ -73,9 +73,9 @@ export class PolyvUpload {
   }
 
   _init() {
-    // if (!this._checkH5Support()) { // 不支持HTML5新特性时使用flash上传；需要带网络协议
-    //   this.url = this.options.urlPrefix + '/upload-flash/index.html';
-    // }
+    if (!this._checkH5Support()) { // 不支持HTML5新特性时使用flash上传；需要带网络协议
+      this.url = this.options.urlPrefix + '/upload-flash/index.html';
+    }
 
     this._addHander(this.uploadButton, 'click', () => {
       this.openWrap();

@@ -1,8 +1,13 @@
-import OSS from 'ali-oss';
+// import OSS from 'ali-oss';
 
 import Ajax from 'components/Utils/Ajax';
 // import Utils from 'components/Utils/Utils';
 // let utils = new Utils();
+
+const OSS = window.OSS;
+const NET_ERR = '网络错误，请检查网络后重试';
+const CHECK_FAIL_ERR = '安全校验错误';
+const OVERSIZE = '您的剩余空间不足，请及时联系客服升级空间';
 
 export default class ResumableUpload {
   constructor() {
@@ -153,9 +158,15 @@ export default class ResumableUpload {
         if (this.initUploadRetryTimes > 0) {
           this._initUpload();
           this.initUploadRetryTimes--;
+        } else if (res.code === 400) {
+          this._emitFail({
+            message: CHECK_FAIL_ERR,
+            res
+          });
         } else {
           this._emitFail({
-            message: '获取token信息失败，请点击续传重试。',
+            message: res.message,
+            res
           });
         }
 
@@ -164,7 +175,7 @@ export default class ResumableUpload {
       // 用户剩余空间不足
       if (this.file.size > data.remainSpace) {
         this._emitFail({
-          message: '您的剩余空间不足，请及时联系客服升级空间',
+          message: OVERSIZE,
           reason: 'overSize'
         });
         return;
@@ -195,7 +206,7 @@ export default class ResumableUpload {
         this.initUploadRetryTimes--;
       } else {
         this._emitFail({
-          message: '获取sts信息失败，请检查当前网络。',
+          message: NET_ERR,
         });
       }
 
@@ -313,9 +324,15 @@ export default class ResumableUpload {
           if (this.completeUploadRetryTimes > 0) {
             this._completeUpload(videoUrl, etag, vid);
             this.completeUploadRetryTimes--;
+          } else if (res.code === 400) {
+            this._emitFail({
+              message: CHECK_FAIL_ERR,
+              res
+            });
           } else {
             this._emitFail({
-              message: '上传失败，失败信息：' + res.message,
+              message: res.message,
+              res,
             });
           }
 
@@ -338,7 +355,7 @@ export default class ResumableUpload {
           this._completeUpload(videoUrl, etag, vid);
         } else {
           this._emitFail({
-            message: '上传失败，请检查当前网络。',
+            message: NET_ERR,
           });
         }
         console.log(err);
@@ -367,9 +384,20 @@ export default class ResumableUpload {
           this.getStsTokenRetryTimes--;
         } else {
           this.stop();
-          this._emitFail({
-            message: '获取sts信息失败，请刷新页面重试。',
-          });
+          // this._emitFail({
+          //   message: '获取sts信息失败，请刷新页面重试。',
+          // });
+          if (res.code === 400) {
+            this._emitFail({
+              message: CHECK_FAIL_ERR,
+              res
+            });
+          } else {
+            this._emitFail({
+              message: res.message,
+              res
+            });
+          }
         }
 
         return;
@@ -398,7 +426,7 @@ export default class ResumableUpload {
       } else {
         this.stop();
         this._emitFail({
-          message: '获取sts信息失败，请检查当前网络。',
+          message: NET_ERR,
         });
       }
       console.log(err);

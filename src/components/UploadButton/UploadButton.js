@@ -19,8 +19,6 @@ export default class UploadButton extends React.Component {
     }
 
     render() {
-
-
         let {
             value,
             name,

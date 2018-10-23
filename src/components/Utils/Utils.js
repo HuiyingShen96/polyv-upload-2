@@ -79,7 +79,8 @@ export default class Utils {
   }
 
   uploadPic(file, options) {
-    const OSS = require('ali-oss');
+    // const OSS = require('ali-oss');
+    const OSS = window.OSS;
     let ossClient = new OSS.Wrapper(options.stsInfo);
     ossClient.put(file.name, file)
       .then((res) => {

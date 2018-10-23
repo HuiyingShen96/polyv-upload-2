@@ -5,290 +5,306 @@ $borderRadius: 3px;
 $fontSize: 14px;
 
 @keyframes progress-bar-stripes {
-  from  { background-position: 40px 0; }
-  to    { background-position: 0 0; }
+  from {
+    background-position: 40px 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
 }
 
-#uploadList
-{
-    .inlineVisible
-    {
-        display: inline-block;
+#uploadList {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  .inlineVisible {
+    display: inline-block;
+  }
+
+  .visible {
+    display: block;
+  }
+
+  .invisible {
+    display: none;
+  }
+
+  .btn-group {
+    font-size: 14px;
+
+    // margin-bottom: 15px;
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #eee;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    >.btn-group-element {
+      margin-right: 5px;
     }
-    .visible
-    {
+
+    .luping {
+      position: relative;
+      vertical-align: top;
+      padding-left: 3px;
+      line-height: 30px;
+
+      cursor: pointer;
+
+      &:hover>span {
         display: block;
-    }
-    .invisible
-    {
-        display: none;
-    }
-    .btn-group
-    {
+      }
+
+      >span {
         font-size: 14px;
+        line-height: 26px;
 
-        margin-bottom: 15px;
-        padding-bottom: 15px;
+        position: absolute;
+        top: 100%;
+        left: 50%;
 
-        border-bottom: 1px solid #eee;
-         > .btn-group-element
-        {
-            margin-right: 5px;
-        }
-        .luping
-        {
-            position: relative;
-            vertical-align: top;
-            padding-left: 3px;
-            line-height: 30px;
+        display: none;
 
-            cursor: pointer;
-            &:hover > span
-            {
-                display: block;
-            }
-             > span
-            {
-                font-size: 14px;
-                line-height: 26px;
+        margin-top: 10px;
+        margin-left: -120px;
+        padding: 0 10px;
 
-                position: absolute;
-                top: 100%;
-                left: 50%;
-
-                display: none;
-
-                margin-top: 10px;
-                margin-left: -120px;
-                padding: 0 10px;
-
-                white-space: nowrap;
-
-                color: #fff;
-                border-radius: 4px;
-                background: #000;
-
-                &:after
-                {
-                    position: absolute;
-                    bottom: 100%;
-                    left: 50%;
-
-                    box-sizing: border-box;
-                    margin-left: -8px;
-
-                    content: '';
-
-                    border: 8px solid transparent;
-                    border-bottom: 8px solid #000;
-                }
-            }
-        }
-        input[type=text]
-        {
-            font-size: $fontSize;
-
-            display: inline-block;
-
-            box-sizing: border-box;
-            min-width: $inputMinWidth;
-            height: $inputHeight;
-            padding: .5ex .5em;
-
-            border: 1px solid #eee;
-            border-radius: $borderRadius;
-            &:focus
-            {
-                border-color: #66afe9;
-                outline: 0;
-                -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
-                        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
-            }
-        }
-        .speed
-        {
-            padding: 0 10px;
-        }
-        .upload
-        {
-            float: right;
-        }
-    }
-    // $trHeight: 50px;
-    .fileList
-    {
-        overflow: auto;
-
-        height: 400px;
-        tbody > tr
-        {
-            box-sizing: border-box;
-
-            border-top: 1px solid #eee;
-            border-bottom: none;
-            &:nth-child(odd)
-            {
-                background-color: #f9f9f9;
-            }
-        }
-        td
-        {
-            box-sizing: border-box;
-        }
-        td.fileName
-        {
-            width: 30%;
-            .fileTitle
-            {
-                font-size: $fontSize;
-
-                float: left;
-                overflow-x: hidden;
-
-                width: 220px;
-
-                text-overflow: ellipsis;
-            }
-            input
-            {
-                font-size: $fontSize;
-
-                box-sizing: border-box;
-                width: 85%;
-                padding: 5px;
-
-                border: 1px solid #eee;
-                border-radius: 5px;
-            }
-        }
-        td.description
-        {
-            width: 30%;
-            textarea
-            {
-                font-size: $fontSize;
-
-                box-sizing: border-box;
-                width: 100%;
-                padding: 5px 8px;
-
-                resize: none;
-
-                color: #555;
-                border-radius: 5px;
-                box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-                border: 1px solid #ccc;
-                background-color: #fff;
-                transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-                overflow: auto;
-
-                &:focus
-                {
-                    border-color: #66afe9;
-                    outline: 0;
-                    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
-                            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
-                }
-            }
-        }
-        td.progress
-        {
-            width: 30%;
-            p
-            {
-                font-size: $fontSize;
-                line-height: 3ex;
-
-                text-align: right;
-            }
-            .progressBar-wrap
-            {
-                overflow: hidden;
-
-                width: 100%;
-                height: 15px;
-
-                border-radius: 3px;
-                background-color: #f5f5f5;
-                box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-            }
-            .progressBar
-            {
-                width: 0;
-                height: 100%;
-
-                border-radius: 3px 0 0 3px;
-                background-color: #5cb85c;
-                background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
-                background-size: 40px 40px;
-
-                &.active {
-                    animation: progress-bar-stripes 2s linear infinite;
-                }
-            }
-        }
-        td.deleteBtn
-        {
-            width: 10%;
-
-            text-align: center;
-            .button
-            {
-                float: right;
-
-                background-color: #d9534f;
-                &:hover
-                {
-                    color: #fff;
-                    background-color: transparentize(#d9534f, .1);
-                }
-            }
-             > span
-            {
-                display: block;
-
-                width: 100%;
-
-                text-align: right;
-
-                color: green;
-            }
-        }
-    }
-    i.fa-pencil
-    {
-        float: left;
-
-        width: 15%;
-
-        text-align: center;
-    }
-    i.fa-check
-    {
-        font-size: 20px;
-
-        color: #5cb85c;
-    }
-    i.fa-trash-o
-    {
-        padding: 5px 10px;
+        white-space: nowrap;
 
         color: #fff;
-        border-radius: 3px;
-        background-color: #ff5b5b;
-        &:hover
-        {
-            cursor: pointer;
+        border-radius: 4px;
+        background: #000;
 
-            opacity: .85;
+        &:after {
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+
+          box-sizing: border-box;
+          margin-left: -8px;
+
+          content: '';
+
+          border: 8px solid transparent;
+          border-bottom: 8px solid #000;
         }
-        &.disabled
-        {
-            opacity: .5;
-            &:hover
-            {
-                cursor: default;
-            }
-        }
+      }
     }
+
+    input[type=text] {
+      font-size: $fontSize;
+
+      display: inline-block;
+
+      box-sizing: border-box;
+      min-width: $inputMinWidth;
+      height: $inputHeight;
+      padding: .5ex .5em;
+
+      border: 1px solid #eee;
+      border-radius: $borderRadius;
+
+      &:focus {
+        border-color: #66afe9;
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+      }
+    }
+
+    .speed {
+      padding: 0 10px;
+    }
+
+    .upload {
+      float: right;
+    }
+  }
+
+  // $trHeight: 50px;
+  .fileList {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+
+    padding-top: 60px;
+
+    >div {
+      height: 100%;
+      overflow: auto;
+    }
+    tbody>tr {
+      box-sizing: border-box;
+
+      border-top: 1px solid #eee;
+      border-bottom: none;
+
+      &:nth-child(odd) {
+        background-color: #f9f9f9;
+      }
+    }
+
+    td {
+      box-sizing: border-box;
+    }
+
+    td.fileName {
+      width: 30%;
+
+      .fileTitle {
+        font-size: $fontSize;
+
+        float: left;
+        overflow-x: hidden;
+
+        width: 200px;
+
+        text-overflow: ellipsis;
+      }
+
+      input {
+        font-size: $fontSize;
+
+        box-sizing: border-box;
+        width: 85%;
+        padding: 5px;
+
+        border: 1px solid #eee;
+        border-radius: 5px;
+      }
+    }
+
+    td.description {
+      width: 30%;
+
+      textarea {
+        font-size: $fontSize;
+
+        box-sizing: border-box;
+        width: 100%;
+        padding: 5px 8px;
+
+        resize: none;
+
+        color: #555;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        border: 1px solid #ccc;
+        background-color: #fff;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        overflow: auto;
+
+        &:focus {
+          border-color: #66afe9;
+          outline: 0;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        }
+      }
+    }
+
+    td.progress {
+      width: 30%;
+
+      p {
+        font-size: $fontSize;
+        line-height: 3ex;
+
+        text-align: right;
+      }
+
+      .progressBar-wrap {
+        overflow: hidden;
+
+        width: 100%;
+        height: 15px;
+
+        border-radius: 3px;
+        background-color: #f5f5f5;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+      }
+
+      .progressBar {
+        width: 0;
+        height: 100%;
+
+        border-radius: 3px 0 0 3px;
+        background-color: #5cb85c;
+        background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+        background-size: 40px 40px;
+
+        &.active {
+          animation: progress-bar-stripes 2s linear infinite;
+        }
+      }
+    }
+
+    td.deleteBtn {
+      width: 10%;
+
+      text-align: center;
+
+      .button {
+        float: right;
+
+        background-color: #d9534f;
+
+        &:hover {
+          color: #fff;
+          background-color: transparentize(#d9534f, .1);
+        }
+      }
+
+      >span {
+        display: block;
+
+        width: 100%;
+
+        text-align: right;
+
+        color: green;
+      }
+    }
+  }
+
+  i.fa-pencil {
+    float: left;
+
+    width: 15%;
+
+    text-align: center;
+  }
+
+  i.fa-check {
+    font-size: 20px;
+
+    color: #5cb85c;
+  }
+
+  i.fa-trash-o {
+    padding: 5px 10px;
+
+    color: #fff;
+    border-radius: 3px;
+    background-color: #ff5b5b;
+
+    &:hover {
+      cursor: pointer;
+
+      opacity: .85;
+    }
+
+    &.disabled {
+      opacity: .5;
+
+      &:hover {
+        cursor: default;
+      }
+    }
+  }
 }

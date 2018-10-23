@@ -1,5 +1,5 @@
 <?php
-    header('Access-Control-Allow-Origin: *');
+    // header('Access-Control-Allow-Origin: *');
 
     $userid = "0ee12d2d4a";
     $secretkey = "fti8Wll50D";

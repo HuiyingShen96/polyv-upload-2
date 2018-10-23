@@ -313,54 +313,62 @@ export default class InfoPanel extends Component {
 
     return (
       <div className="infoPanel" style={{display: this.props.visible ? 'block' : 'none'}}>
-                <SysInfo visible={sysInfoVisiable} sysInfo={sysInfo} />
-                <div className="btn-wrap">
-                    <Button value="保存" visible={editStatus} onClick={this.handleSaveClick} />
-                    <Button value="取消并关闭" visible={editStatus} onClick={this.handleCloseClick} />
-                    <Button value="返回视频信息" visible={!editStatus} onClick={this.handleReturnClick} />
-                    <Button value="关闭" visible={!editStatus} onClick={this.handleCloseClick} />
-                </div>
-                <section className="section_1">
-                    <div className="thumbnail">
-                        <img alt={videoInfo.title} 
-                            src={videoCoverUrl.trim() !== '' ? videoCoverUrl : videoInfo.first_image} />
-                        <div className="btnGroup">
-                            <UploadButton {...uploadBtnProps} />
-                        </div>
-                    </div>
-                    <div className="msg">
-                        <dl>
-                            <dt>标题：</dt>
-                            <dd>{videoInfo.title}</dd><br/>
-                            <dt>时长：</dt>
-                            <dd>{videoInfo.duration}</dd><br/>
-                            <dt>上传时间：</dt>
-                            <dd>{videoInfo.ptime}</dd><br/>
-                            <dt>vid：</dt>
-                            <dd>{videoInfo.vid}</dd><br/>
-                            <dt>播放器地址：</dt>
-                            <dd>{videoInfo.swf_link}</dd><br/>
-                        </dl>
-                    </div>
-                </section>
-                <section className="section_2">
-                    <Table theadData={tableData.theadData} tbodyData={tableData.tbodyData} />
-                </section>
-                <section className="section_3">
-                    <Tabs {...tabsProps}>
-                        <TabPanel className="screenshot" order="0" tab={'视频截图'}>
-                            {videoInfo.imageUrls && videoInfo.imageUrls.map((imgUrl, index) => {
-                                return <img src={imgUrl} key={index} onClick={this.handleImgClick.bind(this, {selectedIndex:index, imgUrl: imgUrl})} alt={`视频截图_${index}`}/>;
-                            })}
-                        </TabPanel>
-                        <TabPanel className="uploadPic" order="1" tab={'最近上传'}>
-                            {latestPic && latestPic.map((picInfo, index) => {
-                                return <img src={picInfo.imgurlsmall} key={picInfo.id} onClick={this.handleImgClick.bind(this, {recentId:picInfo.id, imgUrl: picInfo.imgurlsmall})} alt={`最近上传_${index}`}/>;
-                            })}
-                        </TabPanel>
-                    </Tabs>
-                </section>
+        <SysInfo visible={sysInfoVisiable} sysInfo={sysInfo} />
+        <div className="btn-wrap">
+          <Button value="保存" visible={editStatus} onClick={this.handleSaveClick} />
+          <Button value="取消并关闭" visible={editStatus} onClick={this.handleCloseClick} />
+          <Button value="获取视频信息" visible={!editStatus} onClick={this.handleReturnClick} />
+          <Button value="返回视频列表" visible={!editStatus} onClick={this.handleCloseClick} />
+        </div>
+        <section className="section_1">
+          <div className="thumbnail">
+            <img alt={videoInfo.title} 
+              src={videoCoverUrl.trim() !== '' ? videoCoverUrl : videoInfo.first_image} />
+            <div className="btnGroup">
+              <UploadButton {...uploadBtnProps} />
             </div>
+          </div>
+          <div className="msg">
+            <dl>
+              <dt>标题：</dt>
+              <dd>{videoInfo.title}</dd><br/>
+              <dt>时长：</dt>
+              <dd>{videoInfo.duration}</dd><br/>
+              <dt>上传时间：</dt>
+              <dd>{videoInfo.ptime}</dd><br/>
+              <dt>vid：</dt>
+              <dd>{videoInfo.vid}</dd><br/>
+              <dt>播放器地址：</dt>
+              <dd>{videoInfo.swf_link}</dd><br/>
+            </dl>
+          </div>
+        </section>
+        <section className="section_2">
+          <Table theadData={tableData.theadData} tbodyData={tableData.tbodyData} />
+        </section>
+        <section className="section_3">
+          <Tabs {...tabsProps}>
+            <TabPanel className="screenshot" order="0" tab={'视频截图'}>
+              {videoInfo.imageUrls && videoInfo.imageUrls.map((imgUrl, index) => {
+                return (
+                  <div key={index}>
+                    <img src={imgUrl} onClick={this.handleImgClick.bind(this, {selectedIndex:index, imgUrl: imgUrl})} alt={`视频截图_${index}`}/>
+                  </div>
+                );
+              })}
+            </TabPanel>
+            <TabPanel className="uploadPic" order="1" tab={'最近上传'}>
+              {latestPic && latestPic.map((picInfo, index) => {
+                return (
+                  <div key={picInfo.id}>
+                    <img src={picInfo.imgurlsmall} onClick={this.handleImgClick.bind(this, {recentId:picInfo.id, imgUrl: picInfo.imgurlsmall})} alt={`最近上传_${index}`}/>;
+                  </div>
+                );
+              })}
+            </TabPanel>
+          </Tabs>
+        </section>
+    </div>
     );
   }
 }

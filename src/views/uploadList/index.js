@@ -128,6 +128,13 @@ export default class UploadList extends Component {
                 files,
                 uploadStatus,
             });
+            if (sysInfo) {
+                setTimeout(() => {
+                  this.setState({
+                    sysInfo: ''
+                  });
+                }, 2000);
+            }
         };
 
         files.forEach((file, index) => {
@@ -218,6 +225,13 @@ export default class UploadList extends Component {
                 curIndex,
                 sysInfo,
             });
+            if (sysInfo) {
+                setTimeout(() => {
+                  this.setState({
+                    sysInfo: ''
+                  });
+                }, 2000);
+            }
         };
 
         let {
@@ -538,7 +552,9 @@ export default class UploadList extends Component {
                         disabled={uploadStatus !== 1} />
                 </div>
                 <div className="fileList">
-                    <Table tbodyData={tbodyData} onTdClick={this.handleTdClick} />
+                    <div>
+                        <Table tbodyData={tbodyData} onTdClick={this.handleTdClick} />
+                    </div>
                 </div>
                 <Confirm visible={confirmVisible} onClick={this.handleConfirmEmptyClick} confirmInfo="确认清空上传列表？" />
                 <SysInfo visible={sysInfoVisiable} sysInfo={sysInfo} onClick={this.handleSysInfoClick} />

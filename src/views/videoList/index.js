@@ -13,6 +13,8 @@ import Ajax from 'components/Utils/Ajax';
 
 let utils = new Utils();
 
+const CHECK_FAIL_ERR = '安全校验错误';
+
 export default class VideoList extends Component {
   constructor(props) {
     super(props);
@@ -119,13 +121,25 @@ export default class VideoList extends Component {
       sysInfo,
       videoList,
     });
+    if (sysInfo) {
+      setTimeout(() => {
+        this.setState({
+          sysInfo: ''
+        });
+      }, 2000);
+    }
   }
   processVideoInfoData(videoInfoData) {
     let sysInfo = '',
       videoInfo = videoInfoData.data[0];
 
     if (videoInfoData.status !== 'success') {
-      sysInfo = videoInfoData.message || '获取视频信息出错！请刷新重试';
+      if (videoInfoData.code === 400) {
+        sysInfo = CHECK_FAIL_ERR;
+      } else {
+        sysInfo = videoInfoData.message || '获取视频信息出错！请刷新重试';
+      }
+      console.log(videoInfoData);
     }
 
     this.setState({
@@ -192,6 +206,7 @@ export default class VideoList extends Component {
     });
   }
   handleRowDataClick(index) {
+    this.props.onNavVisabledChange(true);
     let {
       videoList,
     } = this.state;
@@ -264,15 +279,15 @@ export default class VideoList extends Component {
     };
 
     Ajax.ajax(BASE_URL.getVideoList, {
-      data: queryParams
-    })
-    .then(data => {
-      this.processVideoListData(data);
-      this.setState({
-        loading: false,
-      });
-    })
-    .catch(err => console.log(err));
+        data: queryParams
+      })
+      .then(data => {
+        this.processVideoListData(data);
+        this.setState({
+          loading: false,
+        });
+      })
+      .catch(err => console.log(err));
   }
   fetchVideoInfo(vid) {
     this.setState({
@@ -292,15 +307,15 @@ export default class VideoList extends Component {
     let url = BASE_URL.getVideoInfo.replace('{userid}', userData.userid);
 
     Ajax.ajax(url, {
-      data: queryParams
-    })
-    .then(data => {
-      this.processVideoInfoData(data);
-      this.setState({
-        loading: false,
-      });
-    })
-    .catch(err => console.log(err));
+        data: queryParams
+      })
+      .then(data => {
+        this.processVideoInfoData(data);
+        this.setState({
+          loading: false,
+        });
+      })
+      .catch(err => console.log(err));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -331,6 +346,7 @@ export default class VideoList extends Component {
       // userData,
       BASE_URL,
       style,
+      hideNav
     } = this.props;
 
     let infoProps = {
@@ -339,6 +355,7 @@ export default class VideoList extends Component {
         this.setState({
           infoPanelVisible: false
         });
+        this.props.onNavVisabledChange(false);
         if (isChange) {
           this.fetchVideoList(1);
         }
@@ -373,15 +390,17 @@ export default class VideoList extends Component {
       onClick: this.handlePageControlClick.bind(this, 'next'),
       disabled: !pageStatus.next,
     };
+    let panelCls = 'panel';
+    // panelCls += hideNav ? '' : ' has-search-bar';
     return (
       <div id='videoList' style={style}>
-                <div className="search">
+                <div className="search" style={{ display: hideNav ? 'none' : 'block' }}>
                     <SearchBar {...searchBarProps} />
                     <Button {...returnBtnProps} />
                 </div>
-                <div className="panel">
+                <div className={panelCls}>
                     <div className="loading" style={{display: loading ? 'block' : 'none'}}>
-                        <img src="./assets/images/loading.gif" alt="加载中..."/>
+                        <img src={process.env.PUBLIC_URL + '/assets/images/loading.gif'} alt="加载中..."/>
                     </div>
                     <div className="videoListSysInfo" style={{display: sysInfo.trim() !== '' ? 'block' : 'none'}}>
                         <p>{sysInfo}</p>

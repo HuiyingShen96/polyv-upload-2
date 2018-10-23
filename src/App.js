@@ -1,17 +1,17 @@
-import './base.scss';
+import './App.scss';
 
 import React, {
   Component
 } from 'react';
-// import ReactDom from 'react-dom';
 
 import Tabs from './components/Tabs/Tabs';
 import TabPanel from './components/Tabs/TabPanel';
 import SysInfo from './components/SysInfo/SysInfo';
 
-import VideoList from './views/videoList/videoList';
-import UploadList from './views/uploadList/uploadList';
+import VideoList from './views/videoList/';
+import UploadList from './views/uploadList/';
 import Ajax from './components/Utils/Ajax';
+// todo
 import Utils from './components/Utils/Utils';
 let utils = new Utils();
 
@@ -42,6 +42,8 @@ class App extends Component {
       component: 'all',
       luping: 0,
       sysInfo: '',
+
+      hideNav: false,
     };
   }
 
@@ -106,6 +108,7 @@ class App extends Component {
         });
       });
   }
+  
   fetchStsInfo() {
     if (!window.userData.userid) {
       return;
@@ -134,6 +137,17 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // todo
+    // Ajax.ajax('//playertest.polyv.net/huiying/upload-demo-2/getPolyvAuthorization.php')
+    // .then(res => {
+    //   console.log(res);
+    //   Object.assign(window.userData, res);
+    //   window.userData.ptime = res.ts;
+
+    //   this.fetchCategory();
+    // })
+    // .catch(err => console.log(err));
+
     utils.addHander(window, 'message', event => {
       let dataStr = event.data,
         data = typeof dataStr === 'string' && JSON.parse(dataStr);
@@ -172,6 +186,7 @@ class App extends Component {
       component,
       luping,
       sysInfo,
+      hideNav
     } = this.state;
 
     let sysInfoVisiable = !!sysInfo;
@@ -185,14 +200,21 @@ class App extends Component {
     };
     let videoListPorps = {
       videoListIsClicked,
+      hideNav,
       onListChange: () => {
         let videoListIsClicked = false;
         this.setState({
           videoListIsClicked,
         });
+      },
+      onNavVisabledChange: (val) => {
+        this.setState({
+          hideNav: val
+        })
       }
     };
     let tabsProps = {
+      hideNav,
       defaultActiveIndex: 0,
       onChange: options => {
         this.setState({
@@ -208,23 +230,23 @@ class App extends Component {
     } else if (component === 'uploadList') {
       return (
         <div>
-                    <UploadList style={{'paddingTop': '30px'}} {...publicProps} {...uploadListPorps} />
-                    <SysInfo visible={sysInfoVisiable} sysInfo={sysInfo} onClick={this.handleSysInfoClick} />
-                </div>
+          <UploadList style={{'paddingTop': '30px'}} {...publicProps} {...uploadListPorps} />
+          <SysInfo visible={sysInfoVisiable} sysInfo={sysInfo} onClick={this.handleSysInfoClick} />
+        </div>
       );
     } else {
       return (
         <div>
-                    <Tabs {...tabsProps} >
-                        <TabPanel order="0" tab={'上传列表'}>
-                            <UploadList {...publicProps} {...uploadListPorps} />
-                        </TabPanel>
-                        <TabPanel order="1" tab={'视频列表'}>
-                            <VideoList {...publicProps} {...videoListPorps}/>
-                        </TabPanel>
-                    </Tabs>
-                    <SysInfo visible={sysInfoVisiable} sysInfo={sysInfo} onClick={this.handleSysInfoClick} />
-                </div>
+          <Tabs {...tabsProps} >
+            <TabPanel order="0" tab={'上传列表'}>
+              <UploadList {...publicProps} {...uploadListPorps} />
+            </TabPanel>
+            <TabPanel order="1" tab={'视频列表'}>
+              <VideoList {...publicProps} {...videoListPorps}/>
+            </TabPanel>
+          </Tabs>
+          <SysInfo visible={sysInfoVisiable} sysInfo={sysInfo} onClick={this.handleSysInfoClick} />
+        </div>
       );
     }
   }
