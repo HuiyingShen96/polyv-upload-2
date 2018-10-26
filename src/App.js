@@ -149,8 +149,11 @@ class App extends Component {
     // .catch(err => console.log(err));
 
     utils.addHander(window, 'message', event => {
-      let dataStr = event.data,
-        data = typeof dataStr === 'string' && JSON.parse(dataStr);
+      let dataStr = event.data;
+      if (typeof dataStr !== 'string' || !dataStr) {
+        return;
+      }
+      let data = JSON.parse(dataStr);
       if (!data || data.source !== 'polyv-upload') {
         return;
       }

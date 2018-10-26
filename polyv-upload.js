@@ -9,7 +9,19 @@ export class PolyvUpload {
     const PROTOCOL = window.location.protocol;
 
     if (((!options.userid || !options.ts || !options.hash || !options.sign) && !options.requestUrl) || !options.uploadButtton) {
-      throw new TypeError('缺少必选参数！');
+      throw new TypeError('缺少必选的上传参数！');
+    }
+    if (options.width && typeof options.width !== 'number') {
+      delete options.width;
+      console.log('上传参数width必须为数字类型');
+    }
+    if (options.height && typeof options.height !== 'number') {
+      delete options.width;
+      console.log('上传参数height必须为数字类型');
+    }
+    if (options.fileLimit && typeof options.fileLimit !== 'number') {
+      delete options.fileLimit;
+      console.log('上传参数fileLimit必须为数字类型');
     }
     var urlPrefix = PROTOCOL + '//playertest.polyv.net/player2/huiying/plug-in-v2';
     // var urlPrefix = PROTOCOL + '//v.polyv.net/file/plug-in-v2';
@@ -43,6 +55,7 @@ export class PolyvUpload {
     this.width = options.width ? (options.width < 900 ? 900 : options.width) : 1000; // 弹框的宽，最小900px；默认值1000px
     this.height = options.height ? (options.height < 500 ? 500 : options.height) : 600; // 弹框的高，最小500px；默认值600px
     this.requestUrl = options.requestUrl;
+    this.retryTimes = 5;
 
     // 默认使用HTML5方式上传
     // this.url = urlPrefix + '/upload-html5/build/index.html';
@@ -107,13 +120,30 @@ export class PolyvUpload {
     }
   }
 
-  _getSign({ success, fail }) {
+  _getSign({
+    success,
+    fail
+  }) {
+    var self = this;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', this.requestUrl + '?id=' + encodeURI(new Date().getTime())); // 防止IE9浏览器发起GET请求时总是返回304的问题
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200 && typeof success === 'function') {
-          success(JSON.parse(xhr.responseText));
+          try {
+            success(JSON.parse(xhr.responseText));
+            self.retryTimes = 5;
+          } catch (err) {
+            if (self.retryTimes <= 0) {
+              fail({});
+              return;
+            }
+            self.retryTimes--;
+            self._getSign({
+              success,
+              fail
+            });
+          }
         } else if (typeof fail === 'function') {
           fail(JSON.parse(xhr.responseText));
         }
@@ -175,6 +205,10 @@ export class PolyvUpload {
 
   _receiveMsg(event) {
     console.log(event);
+    const TYPE_LIST = ['VIDEO_INFO', 'FILE_COMPLETE', 'FILE_FAIL'];
+    if (!event.data || !event.data.type || !TYPE_LIST.includes(event.data.type)) {
+      return;
+    }
     var msgData = JSON.parse(event.data);
     switch (msgData.type) {
       case 'VIDEO_INFO':
@@ -226,4 +260,3 @@ export class PolyvUpload {
     document.getElementById('polyv-wrapAll').style.display = 'none';
   }
 }
-

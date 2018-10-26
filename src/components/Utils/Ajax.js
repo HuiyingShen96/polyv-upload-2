@@ -165,53 +165,23 @@ class Ajax {
     const timeout = options.timeout || 30000;
     let data = options.data || null;
 
+    let fd = null;
+    if (data instanceof Object) {
+      if (method === 'GET') {
+        let queryStr = Ajax.param(data);
+        url += `?${queryStr}`;
+      } else if (method === 'POST') {
+        fd = new FormData();
+        for (let key in data) {
+          if (data.hasOwnProperty(key)) {
+            fd.append(key, data[key]);
+          }
+        }
+      }
+    }
+
     return new Promise((resolve, reject) => {
-      if (window.XDomainRequest) {
-        if (data instanceof Object) {
-          if (method === 'GET') {
-            let queryStr = Ajax.param(data);
-            url += `?${queryStr}`;
-            data = null;
-          } else if (method === 'POST') {
-            data = JSON.stringify(data);
-          }
-        }
-
-        const XDR = new XDomainRequest();
-        XDR.open(method, url);
-        XDR.timeout = timeout;
-        XDR.onload = () => {
-          try {
-            return resolve(JSON.parse(XDR.responseText));
-          } catch (e) {
-            reject(e);
-          }
-          return reject({});
-        };
-        // fix random aborting: https://cypressnorth.com/programming/internet-explorer-aborting-ajax-requests-fixed/
-        XDR.onprogress = () => {};
-        XDR.ontimeout = () => reject('XDomainRequest timeout');
-        XDR.onerror = () => reject('XDomainRequest error');
-        setTimeout(() => {
-          XDR.send(data);
-        }, 0);
-      } else {
-        let fd = null;
-        if (data instanceof Object) {
-          if (method === 'GET') {
-            let queryStr = Ajax.param(data);
-            url += `?${queryStr}`;
-          } else if (method === 'POST') {
-            fd = new FormData();
-            for (let key in data) {
-              if (data.hasOwnProperty(key)) {
-                fd.append(key, data[key]);
-              }
-            }
-          }
-        }
-
-        let xhr = new XMLHttpRequest();
+      let xhr = new XMLHttpRequest();
         xhr.open(method, url);
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
@@ -222,7 +192,6 @@ class Ajax {
           }
         };
         xhr.send(fd);
-      }
     });
   }
 }

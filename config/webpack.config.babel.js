@@ -1,4 +1,6 @@
 const path = require('path');
+const uglify = require('uglifyjs-webpack-plugin');
+
 const ROOT_PATH = path.resolve(__dirname);
 
 module.exports = {
@@ -23,5 +25,9 @@ module.exports = {
         }
       }
     }]
-  }
+  },
+
+  plugins: [
+    new uglify()
+  ]
 };
